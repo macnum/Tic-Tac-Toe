@@ -84,7 +84,7 @@ const winningCombos = [
 ];
 function GameController() {
 	let gameOver = false;
-	const board = GameBoard();
+	let board = GameBoard();
 	const player1 = Players('john', 'X');
 	const player2 = Players('Hellen', 'O');
 	let activePlayer = player1;
@@ -164,20 +164,11 @@ function GameController() {
 		board.printGridToConsole();
 	}
 
-	return { playRound, resetGame };
+	return {
+		playRound,
+		resetGame,
+		getBoard: board.getBoard,
+		getActivePlayer: () => activePlayer,
+		isGameOver: () => gameOver,
+	};
 }
-
-console.log('hello');
-const game = GameController();
-
-function screenController() {}
-
-game.playRound(0, 1);
-game.playRound(1, 1);
-game.playRound(2, 0);
-game.playRound(2, 1);
-game.playRound(1, 0);
-game.playRound(0, 0);
-game.playRound(1, 2);
-game.playRound(2, 2);
-game.playRound(0, 2);
