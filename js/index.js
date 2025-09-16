@@ -167,8 +167,55 @@ function GameController() {
 	return {
 		playRound,
 		resetGame,
-		getBoard: board.getBoard,
+		getBoard: () => board.getBoard(),
 		getActivePlayer: () => activePlayer,
 		isGameOver: () => gameOver,
 	};
 }
+function screenController() {
+	const game = GameController();
+	const playerTurnDiv = document.querySelector('.turn');
+	const boardDiv = document.querySelector('.board');
+	const resetBtn = document.querySelector('.reset');
+
+	function renderBoard() {
+		boardDiv.textContent = ''; // clear old board
+		const board = game.getBoard();
+
+		board.forEach((row, rowIndex) => {
+			row.forEach((cell, colIndex) => {
+				const cellBtn = document.createElement('button');
+				cellBtn.classList.add('cell');
+				cellBtn.textContent = cell.getSign() || '';
+				cellBtn.addEventListener('click', () => {
+					const result = game.playRound(rowIndex, colIndex);
+					renderBoard();
+					updateTurn(result);
+				});
+				boardDiv.appendChild(cellBtn);
+			});
+		});
+	}
+
+	function updateTurn(result) {
+		if (result) {
+			playerTurnDiv.textContent = result; // winner or draw
+		} else {
+			const player = game.getActivePlayer();
+			playerTurnDiv.textContent = `Player's turn: ${player.getPlayerName()} (${player.getPlayerSign()})`;
+		}
+	}
+
+	resetBtn.addEventListener('click', () => {
+		game.resetGame();
+		renderBoard();
+		updateTurn();
+	});
+
+	renderBoard();
+	updateTurn();
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+	screenController();
+});
